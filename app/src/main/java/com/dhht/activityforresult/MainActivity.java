@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         onResultManager = new OnResultManager(this);
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, Main2Activity.class);
         onResultManager.startForResult(intent, 1111, new OnResultManager.Callback() {
             @Override
             public void onActivityResult(int requestCode, int resultCode, Intent data) {
