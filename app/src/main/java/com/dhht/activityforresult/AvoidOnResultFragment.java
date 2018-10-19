@@ -34,11 +34,11 @@ public class AvoidOnResultFragment extends Fragment {
     }
 
     public Observable<ActivityResultInfo> startForResult(final Intent intent, final int requestCode) {
-        PublishSubject<ActivityResultInfo> subject = PublishSubject.create();
-        mSubjects.put(requestCode, subject);
+        final PublishSubject<ActivityResultInfo> subject = PublishSubject.create();
         return subject.doOnSubscribe(new Consumer<Disposable>() {
             @Override
             public void accept(Disposable disposable) throws Exception {
+                mSubjects.put(requestCode, subject);
                 startActivityForResult(intent, requestCode);
             }
         });
@@ -53,11 +53,13 @@ public class AvoidOnResultFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //rxjava方式的处理
-        PublishSubject<ActivityResultInfo> subject = mSubjects.remove(requestCode);
-        if (subject != null) {
-            subject.onNext(new ActivityResultInfo(resultCode, data));
-            subject.onComplete();
-        }
+        //if (mSubjects.size() >0 ){
+            PublishSubject<ActivityResultInfo> subject = mSubjects.remove(requestCode);
+            if (subject != null) {
+                subject.onNext(new ActivityResultInfo(resultCode, data));
+                subject.onComplete();
+            }
+        //}
 
         //callback方式的处理
         AvoidOnResult.Callback callback = mCallbacks.remove(requestCode);
